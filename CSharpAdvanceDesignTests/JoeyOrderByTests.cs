@@ -1,5 +1,4 @@
-﻿using System;
-using ExpectedObjects;
+﻿using ExpectedObjects;
 using Lab.Entities;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -7,18 +6,6 @@ using System.Linq;
 
 namespace CSharpAdvanceDesignTests
 {
-    public class KeyComparePair
-    {
-        public KeyComparePair(Func<Employee, string> selector, IComparer<string> comparer)
-        {
-            Selector = selector;
-            Comparer = comparer;
-        }
-
-        public Func<Employee, string> Selector { get; private set; }
-        public IComparer<string> Comparer { get; private set; }
-    }
-
     [TestFixture]
     public class JoeyOrderByTests
     {
@@ -32,11 +19,13 @@ namespace CSharpAdvanceDesignTests
                 new Employee {FirstName = "Joseph", LastName = "Chen"},
                 new Employee {FirstName = "Joey", LastName = "Chen"},
             };
+
+
             //transform 
-            var actual = JoeyOrderByLastNameAndFirstName(
-                employees, 
-                new KeyComparePair(employee => employee.LastName, Comparer<string>.Default),
-                new KeyComparePair(employee => employee.FirstName, Comparer<string>.Default));
+            var firstPair = new KeyComparePair<string>(employee => employee.LastName, Comparer<string>.Default);
+            var secondPair = new KeyComparePair<string>(employee => employee.FirstName, Comparer<string>.Default);
+            var actual = JoeyOrderByLastNameAndFirstName(employees,
+                new ComboCompare(firstPair, secondPair));
 
             var expected = new[]
             {
@@ -51,7 +40,7 @@ namespace CSharpAdvanceDesignTests
 
 
         private IEnumerable<Employee> JoeyOrderByLastNameAndFirstName
-            (IEnumerable<Employee> employees, KeyComparePair firstPair, KeyComparePair secondPair)
+            (IEnumerable<Employee> employees, ComboCompare comboCompare)
         {
             //bubble sort
             var elements = employees.ToList();
@@ -62,30 +51,18 @@ namespace CSharpAdvanceDesignTests
                 for (int i = 1; i < elements.Count; i++)
                 {
                     var employee = elements[i];
-                    if (Compare(firstPair, employee, minElement) < 0)
+                    var finalCompareResult = comboCompare.Compare(employee, minElement);
+
+                    if (finalCompareResult < 0)
                     {
                         minElement = employee;
                         index = i;
-                    }
-                    else if (firstPair.Comparer.Compare(firstPair.Selector(employee), firstPair.Selector(minElement)) == 0)
-                    {
-                        if (secondPair.Comparer.Compare(secondPair.Selector(employee), secondPair.Selector(minElement)) < 0)
-                        {
-                            minElement = employee;
-                            index = i;
-                        }
                     }
                 }
 
                 elements.RemoveAt(index);
                 yield return minElement;
             }
-        }
-
-        //extract method and make method non-static chose KeycomparePair
-        private static int Compare(KeyComparePair firstPair, Employee employee, Employee minElement)
-        {
-            return firstPair.Comparer.Compare(firstPair.Selector(employee), firstPair.Selector(minElement));
         }
     }
 }

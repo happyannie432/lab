@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComboCompare.cs" />
     <Compile Include="JoeyAggregateTests.cs" />
     <Compile Include="JoeyAllTests.cs" />
     <Compile Include="JoeyAnyTests.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="JoeyWhereTests.cs" />
     <Compile Include="JoeyWhereWithDefaultTests.cs" />
     <Compile Include="JoeyZipTests.cs" />
+    <Compile Include="KeyComparePair.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
