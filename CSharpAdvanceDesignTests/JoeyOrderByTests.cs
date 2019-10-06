@@ -1,40 +1,10 @@
-﻿using ExpectedObjects;
+﻿using System.Collections;
+using ExpectedObjects;
 using Lab.Entities;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace CSharpAdvanceDesignTests
 {
-    public static class MyLinqExtensions
-    {
-        public static IEnumerable<Employee> AnnieOrderBy
-            (this IEnumerable<Employee> employees, ComboCompare comboCompare)
-        {
-            //bubble sort
-            var elements = employees.ToList();
-            while (elements.Any())
-            {
-                var minElement = elements[0];
-                var index = 0;
-                for (int i = 1; i < elements.Count; i++)
-                {
-                    var employee = elements[i];
-                    var finalCompareResult = comboCompare.Compare(employee, minElement);
-
-                    if (finalCompareResult < 0)
-                    {
-                        minElement = employee;
-                        index = i;
-                    }
-                }
-
-                elements.RemoveAt(index);
-                yield return minElement;
-            }
-        }
-    }
-
     [TestFixture]
     public class JoeyOrderByTests
     {
@@ -50,15 +20,18 @@ namespace CSharpAdvanceDesignTests
                 new Employee {FirstName = "Joey", LastName = "Wang", Age = 20},
             };
 
-           
-            var lastNamePair = new KeyComparePair<string>(employee => employee.LastName, Comparer<string>.Default);
-            var firstNamePair = new KeyComparePair<string>(employee => employee.FirstName, Comparer<string>.Default);
-            var agePair = new KeyComparePair<int>(employee => employee.Age, Comparer<int>.Default);
 
-            var comparer = new ComboCompare(lastNamePair, firstNamePair);
-            var finalComparer = new ComboCompare(comparer, agePair);
+            //var lastNamePair = new KeyComparePair<string>(employee => employee.LastName, Comparer<string>.Default);
+            //var firstNamePair = new KeyComparePair<string>(employee => employee.FirstName, Comparer<string>.Default);
+            //var agePair = new KeyComparePair<int>(employee => employee.Age, Comparer<int>.Default);
 
-            var actual = employees.AnnieOrderBy(finalComparer);
+            //var comparer = new ComboCompare(lastNamePair, firstNamePair);
+            //var finalComparer = new ComboCompare(comparer, agePair);
+
+            //var actual = employees.AnnieThenBy(finalComparer);
+            var actual = employees.AnnieOrderBy(e => e.LastName)
+                        .AnnieThenBy(e => e.FirstName)
+                        .AnnieThenBy(e => e.Age);
 
             var expected = new[]
             {

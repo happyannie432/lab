@@ -86,6 +86,8 @@
     <Compile Include="JoeyWhereWithDefaultTests.cs" />
     <Compile Include="JoeyZipTests.cs" />
     <Compile Include="KeyComparePair.cs" />
+    <Compile Include="MyComparerBuilder.cs" />
+    <Compile Include="MyLinqExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
